@@ -9,10 +9,10 @@ node {
     // Poll last update of the default branch
 
     // Prod branch (master)
-    // git credentialsId: 'git_account', url: 'https://github.com/fscoding/rabbitmq.git'
+    git credentialsId: 'git_account', url: 'https://github.com/fscoding/rabbitmq.git'
 
     // Testing branch
-    git branch: 'jenkins', credentialsId: 'git_account', url: 'https://github.com/fscoding/rabbitmq.git'
+    // git branch: 'jenkins', credentialsId: 'git_account', url: 'https://github.com/fscoding/rabbitmq.git'
   }
 
   stage('New release GIT') {
