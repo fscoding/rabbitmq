@@ -7,7 +7,12 @@ import hudson.EnvVars
 node {
   stage('poll') {
     // Poll last update of the default branch
-    git credentialsId: 'git_account', url: 'https://github.com/fscoding/rabbitmq.git'
+
+    // Prod branch (master)
+    // git credentialsId: 'git_account', url: 'https://github.com/fscoding/rabbitmq.git'
+
+    // Testing branch
+    git branch: 'jenkins', credentialsId: 'git_account', url: 'https://github.com/fscoding/rabbitmq.git'
   }
 
   stage('New release GIT') {
@@ -21,35 +26,22 @@ node {
     // Grab last pushed version docker images on nexus
     env.existVersion = sh returnStdout: true, script: 'sh scripts/checkForVersion.sh'
   }
-  stage('Build docker image') {
 
-    // Build the image
-      app = docker.build("fscoding")
+  if ("${env.existVersion}" != "${env.release}") {
+
+    stage('Build docker image') {
+
+      // Build the image
+        app = docker.build("fscoding")
+    }
+
+    stage('Push image') {
+
+       // Push image to the Nexus with new release
+        docker.withRegistry('http://nexus.fscoding.com:8082', 'docker-private-credentials') {
+            app.push("${env.release}")
+            app.push("latest")
+        }
+    }
   }
-
-  stage('Push image') {
-
-     // Push image to the Nexus with new release
-      docker.withRegistry('http://nexus.fscoding.com:8085', 'docker-private-credentials') {
-          app.push("${env.release}")
-          app.push("latest")
-      }
-  }
-  // if ("${env.existVersion}" != "${env.release}") {
-  //
-  //   stage('Build docker image') {
-  //
-  //     // Build the image
-  //       app = docker.build("fscoding")
-  //   }
-  //
-  //   stage('Push image') {
-  //
-  //      // Push image to the Nexus with new release
-  //       docker.withRegistry('http://nexus.fscoding.com:8085', 'docker-private-credentials') {
-  //           app.push("${env.release}")
-  //           app.push("latest")
-  //       }
-  //   }
-  // }
 }
