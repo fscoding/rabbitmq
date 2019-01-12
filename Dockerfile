@@ -1,6 +1,6 @@
 
 # FROM centos:centos7
-FROM fsadykov/centos_python
+FROM fsadykov/centos
 MAINTAINER Farkhod Sadykov
 
 # Install the basic requirements
