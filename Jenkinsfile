@@ -25,9 +25,7 @@ node {
 
      // Push image to the Nexus with new release
       docker.withRegistry('http://nexus.fscoding.com:8082', 'docker-private-credentials') {
-          app.push("${env.release}")
-          app.push("latest")
+          app.push("test")
       }
   }
-
 }
