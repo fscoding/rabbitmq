@@ -32,7 +32,7 @@ node {
     stage('Build docker image') {
 
       // Build the image
-        app = docker.build("fscoding")
+        app = docker.build("fscoding-rabbitmq")
     }
 
     stage('Push image') {
