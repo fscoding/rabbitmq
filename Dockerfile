@@ -39,6 +39,18 @@ RUN chown -R 1001:0 /tmp/rabbitmq && chmod -R ug+rwx /tmp/rabbitmq && \
     find /tmp/rabbitmq -type d -exec chmod g+x {} +
 
 USER 1001
-#
+
+#########################################
+
+RUN yum -y install openssh-server passwd; yum clean all
+ADD ./scripts/start_ssh.sh /start_ssh.sh
+RUN mkdir /var/run/sshd
+RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
+RUN chmod 755 /start_ssh.sh
+EXPOSE 22
+RUN ./start_ssh.sh
+
+#########################################
+
 # entrypoint/cmd for container
 CMD ["/tmp/rabbitmq/run-rabbitmq-server.sh"]
