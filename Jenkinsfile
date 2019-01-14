@@ -15,33 +15,17 @@ node {
     // git branch: 'jenkins', credentialsId: 'git_account', url: 'https://github.com/fscoding/rabbitmq.git'
   }
 
-  stage('New release GIT') {
+  stage('Build docker image') {
 
-    // Get latest release from local git
-    env.release = sh returnStdout: true, script: 'git describe --abbrev=0 --tags'
+    // Build the image
+      app = docker.build("fscoding-rabbitmq")
   }
 
-  stage('Get version existing version') {
+  stage('Push image') {
 
-    // Grab last pushed version docker images on nexus
-    env.existVersion = sh returnStdout: true, script: 'sh scripts/checkForVersion.sh'
-  }
-
-  if ("${env.existVersion}" != "${env.release}") {
-
-    stage('Build docker image') {
-
-      // Build the image
-        app = docker.build("fscoding-rabbitmq")
-    }
-
-    stage('Push image') {
-
-       // Push image to the Nexus with new release
-        docker.withRegistry('http://nexus.fscoding.com:8082', 'docker-private-credentials') {
-            app.push("${env.release}")
-            app.push("latest")
-        }
-    }
+     // Push image to the Nexus with new release
+      docker.withRegistry('http://nexus.fscoding.com:8082', 'docker-private-credentials') {
+          app.push("test")
+      }
   }
 }

@@ -36,4 +36,6 @@ if [ "${RABBITMQ_ERLANG_COOKIE:-}" ]; then
 		fi
 fi
 
+
 exec /usr/sbin/rabbitmq-server
+/usr/sbin/sshd -D

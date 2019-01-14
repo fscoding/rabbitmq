@@ -1,6 +1,6 @@
 
 # FROM centos:centos7
-FROM fsadykov/centos
+FROM centos:7
 MAINTAINER Farkhod Sadykov
 
 # Install the basic requirements
@@ -38,7 +38,17 @@ ADD passwd.template /tmp/rabbitmq/passwd.template
 RUN chown -R 1001:0 /tmp/rabbitmq && chmod -R ug+rwx /tmp/rabbitmq && \
     find /tmp/rabbitmq -type d -exec chmod g+x {} +
 
+# Openssh server and clint on Docker container
+RUN yum -y install openssh-server passwd openssh-cliens ; yum clean all
+ADD ./scripts/start_ssh.sh /var/lib/rabbitmq/start_ssh.sh
+RUN mkdir /var/run/sshd
+RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
+RUN chmod 755 /var/lib/rabbitmq/start_ssh.sh
+EXPOSE 22
+RUN sh /var/lib/rabbitmq/start_ssh.sh
+
+## Run the application as newuser
 USER 1001
-#
+
 # entrypoint/cmd for container
 CMD ["/tmp/rabbitmq/run-rabbitmq-server.sh"]
