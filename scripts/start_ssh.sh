@@ -2,8 +2,8 @@
 
 __create_user() {
 
-useradd fsadykov
-SSH_USERPASS=redhat
+useradd "${RABBITMQ_USER}"
+SSH_USERPASS="${RABBITMQ_PASS}"
 echo -e "$SSH_USERPASS\n$SSH_USERPASS" | (passwd --stdin user)
 echo ssh user password: $SSH_USERPASS
 }
